@@ -1,48 +1,54 @@
 import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
 
 export default function decorate(block) {
-  // Create carousel
-  const carouselDiv = document.createElement('div');
-  carouselDiv.className = 'carousel';
+  // Carousel
+  const carousel = document.createElement('div');
+  carousel.className = 'carousel';
   
-  // Assume the first row contains carousel images
-  const carouselRow = block.children[0];
-  [...carouselRow.children].forEach((div) => {
-    if (div.querySelector('picture')) {
-      const img = div.querySelector('img');
-      const picture = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-      carouselDiv.append(picture);
-    }
+  // Add your carousel images here
+  const images = ['image1.jpg', 'image2.jpg', 'image3.jpg'];
+  images.forEach((src) => {
+    const picture = createOptimizedPicture(src, 'Carousel Image', false, [{ width: '750' }]);
+    carousel.appendChild(picture);
   });
 
-  // Create form
+  // Form
   const form = document.createElement('form');
   form.className = 'form';
 
-  // Assume subsequent rows are for form fields
-  [...block.children].slice(1).forEach((row) => {
+  const fields = [
+    { name: 'firstname', label: 'First Name', type: 'text' },
+    { name: 'lastname', label: 'Last Name', type: 'text' },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'telephone', label: 'Telephone', type: 'tel' },
+  ];
+
+  fields.forEach((field) => {
     const fieldDiv = document.createElement('div');
     fieldDiv.className = 'form-field';
 
     const label = document.createElement('label');
-    label.textContent = row.children[0].textContent;
+    label.textContent = field.label;
+    label.setAttribute('for', field.name);
 
     const input = document.createElement('input');
-    input.type = row.children[1].textContent.toLowerCase();
-    input.id = input.name = row.children[0].textContent.toLowerCase().replace(' ', '');
+    input.type = field.type;
+    input.id = field.name;
+    input.name = field.name;
     input.required = true;
 
-    fieldDiv.append(label, input);
-    form.append(fieldDiv);
+    fieldDiv.appendChild(label);
+    fieldDiv.appendChild(input);
+    form.appendChild(fieldDiv);
   });
 
-  // Add submit button
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
   submitButton.textContent = 'Submit';
-  form.append(submitButton);
+  form.appendChild(submitButton);
 
-  // Clear and populate the block
+  // Append carousel and form to the block
   block.textContent = '';
-  block.append(carouselDiv, form);
+  block.appendChild(carousel);
+  block.appendChild(form);
 }

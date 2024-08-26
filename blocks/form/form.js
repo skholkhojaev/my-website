@@ -37,7 +37,7 @@ function constructPayload(form) {
 async function submitForm(form) {
   const payload = constructPayload(form);
   payload.timestamp = new Date().toJSON();
-  const resp = await fetch(`https://admin.hlx.page/${form.dataset.action}/skholkhojaev/my-website/main/Form.json`, {
+  const resp = await fetch(`https://main--my-website--skholkhojaev.hlx.page/form.json`, {
     method: 'POST',
     cache: 'no-cache',
     headers: {

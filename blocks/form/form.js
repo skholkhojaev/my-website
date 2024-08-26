@@ -37,7 +37,7 @@ function constructPayload(form) {
 async function submitForm(form) {
   const payload = constructPayload(form);
   payload.timestamp = new Date().toJSON();
-  const resp = await fetch(`https://form.aem.page/main--helix-website--adobe${form.dataset.action}`, {
+  const resp = await fetch(`https://admin.hlx.page/${form.dataset.action}/skholkhojaev/my-website/main/Form.json`, {
     method: 'POST',
     cache: 'no-cache',
     headers: {
@@ -57,6 +57,10 @@ function createButton(fd) {
     button.addEventListener('click', async (event) => {
       const form = button.closest('form');
       if (fd.Placeholder) form.dataset.action = fd.Placeholder;
+      
+      // Set the form action dynamically
+      form.setAttribute('action', form.dataset.action);
+      
       if (form.checkValidity()) {
         event.preventDefault();
         button.setAttribute('disabled', '');
@@ -136,8 +140,11 @@ export async function createForm(formURL) {
   const resp = await fetch(pathname);
   const json = await resp.json();
   const form = document.createElement('form');
+  
+  // Make sure the action is set correctly here as well
+  form.setAttribute('action', pathname.split('.json')[0]);
+  
   const rules = [];
-  // eslint-disable-next-line prefer-destructuring
   form.dataset.action = pathname.split('.json')[0];
   json.data.forEach((fd) => {
     fd.Type = fd.Type || 'text';
@@ -189,6 +196,7 @@ export async function createForm(formURL) {
   fill(form);
   return (form);
 }
+
 
 export default async function decorate(block) {
   const form = block.querySelector('a[href$=".json"]');
